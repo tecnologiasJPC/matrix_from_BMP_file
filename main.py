@@ -2,6 +2,7 @@ from PIL import Image
 import os, sys
 
 if __name__ == '__main__':
+    factor = False
     print('Convert image for OLED 128x64')
     route = os.getcwd()
     files = os.listdir(route + '/image/')
@@ -13,9 +14,17 @@ if __name__ == '__main__':
         sys.exit()
 
     img = Image.open(route + '/image/' + files[0])
-    width, height = img.size
+    if factor:
+        w, h = img.size
+        print(f'Image of width {w} and height {h}')
+        factor = 64 / h
+        print(f'El factor es de {factor}')
+        img_p = img.resize((int(w*factor), int(h*factor)))
+        width, height = img_p.size
+        print(f'New image of width {width} and height {height}')
+    else:
+        width, height = img.size
 
-    print(f'Image of width {width} and height {height}')
     if width > 128:
         print(f'Image width larger than expected: {width}, it must be below 128')
     elif height > 64:
