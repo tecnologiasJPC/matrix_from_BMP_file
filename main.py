@@ -4,7 +4,7 @@ import os
 import time
 
 if __name__ == '__main__':
-    factor = True
+    factor = False
     print('Convert image for OLED 128x64')
     route = os.path.dirname(os.path.abspath(__file__))
     folder_i = os.path.join(route, 'image')
@@ -20,13 +20,13 @@ if __name__ == '__main__':
 
     img = Image.open(os.path.join(folder_i, files[0]))
 
-    if '.bmp' not in files[0]:
+    if '.bmp' not in files[0]:  # in case it is not a BMP file, it is converted
         img_mono = img.convert('L')
         img_binaria = img_mono.point(lambda p: 255 if p > 128 else 0)
         img_binaria.save(os.path.join(route, 'bmp_image.bmp'), format='BMP')
         img = Image.open(os.path.join(route, 'bmp_image.bmp'))
 
-    if factor:
+    if factor:  # change the image size
         w, h = img.size
         print(f'Image of width {w} and height {h}')
         factor = 64 / h
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     img_n = img.resize((n_width, height))
 
     img_binary = img_n.convert("1")  # convert to gray scale and binary
-    pixels = list(img_binary.getdata())  # Obtener los valores (0 para negro, 1 para blanco)
+    pixels = list(img_binary.getdata())  # get values for pixels, 1 and 0
 
     print('static const unsigned char PROGMEM logo_bmp[] =')
     content = content + f'static const unsigned char PROGMEM logo_bmp[] =\n'
@@ -81,7 +81,7 @@ if __name__ == '__main__':
             content = content + '1'
     print('\n};')
     content = content + '\n};'
-    folder_c = os.path.join(route, 'ImageOLED')
+    folder_c = os.path.join(route, 'ImageOLED')  # creates h file in this route
     with open(os.path.join(folder_c, 'image_code.h'), 'w') as f:
         f.write(content)
     print('File image_code.h created successfully')
